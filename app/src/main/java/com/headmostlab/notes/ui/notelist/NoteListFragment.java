@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.headmostlab.notes.R;
 import com.headmostlab.notes.databinding.FragmentNoteListBinding;
 import com.headmostlab.notes.model.Note;
+import com.headmostlab.notes.ui.note.NoteFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
 
     public static final String NOTES_KEY = "NOTES";
     private FragmentNoteListBinding binding;
+    private NoteListContract.Presenter presenter;
 
     public static NoteListFragment newNoteListFragment(ArrayList<Note> notes) {
         NoteListFragment fragment = new NoteListFragment();
@@ -42,9 +44,20 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         List<Note> notes = getArguments().getParcelableArrayList(NOTES_KEY);
         binding.noteList.setAdapter(new NoteListAdapter(notes));
+        presenter = new NoteListPresenter();
+        presenter.takeView(this);
     }
 
-    private static class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
+    @Override
+    public void show(Note note) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, NoteFragment.newNoteFragment(note))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
         private final List<Note> notes;
 
@@ -63,9 +76,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
         @Override
         public void onBindViewHolder(@NonNull NoteListAdapter.ViewHolder holder, int position) {
             holder.title.setText(notes.get(position).getTitle());
-            holder.container.setOnClickListener(v -> {
-                // TODO: 2/16/2021
-            });
+            holder.container.setOnClickListener(v -> presenter.select(notes.get(position)));
         }
 
         @Override
@@ -73,7 +84,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
             return notes.size();
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder {
 
             public final TextView title;
             private final ViewGroup container;
