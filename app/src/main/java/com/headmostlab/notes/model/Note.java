@@ -85,7 +85,7 @@ public class Note implements Parcelable {
             return this;
         }
 
-        public Builder setDate(Date creationDate) {
+        public Builder setCreateDate(Date creationDate) {
             note.creationDate = creationDate;
             return this;
         }
