@@ -1,5 +1,6 @@
 package com.headmostlab.notes.ui.note;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,14 @@ public class NoteFragment extends Fragment implements NoteContract.View {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean isPortrait = getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT;
+
+        if (!isPortrait) {
+            getFragmentManager().popBackStack();
+        }
+
         presenter = new ViewModelProvider(this,
                 new NoteViewModelFactory(this, null)).get(NotePresenter.class);
         if (getArguments() != null) {

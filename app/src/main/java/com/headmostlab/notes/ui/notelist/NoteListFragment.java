@@ -49,11 +49,21 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
 
     @Override
     public void show(Note note) {
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, NoteFragment.newNoteFragment(note))
-                .addToBackStack("note")
-                .commit();
+        boolean isPortrait = getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT;
+
+        if (isPortrait) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, NoteFragment.newNoteFragment(note))
+                    .addToBackStack("note")
+                    .commit();
+        } else {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.noteContainer, NoteFragment.newNoteFragment(note))
+                    .commit();
+        }
     }
 
     @Override
