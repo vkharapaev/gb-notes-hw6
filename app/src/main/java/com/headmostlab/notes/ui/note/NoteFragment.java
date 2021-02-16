@@ -12,10 +12,11 @@ import androidx.fragment.app.Fragment;
 import com.headmostlab.notes.databinding.FragmentNoteBinding;
 import com.headmostlab.notes.model.Note;
 
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements NoteContract.View {
 
     public static final String NOTE_KEY = "NOTE";
     private FragmentNoteBinding binding;
+    private NotePresenter presenter;
 
     public static NoteFragment newNoteFragment(Note note) {
         NoteFragment fragment = new NoteFragment();
@@ -35,6 +36,12 @@ public class NoteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Note note = getArguments().getParcelable(NOTE_KEY);
+        presenter = new NotePresenter();
+        presenter.takeView(this, note);
+    }
+
+    @Override
+    public void show(Note note) {
         binding.title.setText(note.getTitle());
         binding.description.setText(note.getDescription());
         binding.createDate.setText(String.format("%s", note.getCreationDate()));
