@@ -1,5 +1,6 @@
 package com.headmostlab.notes.ui.notelist;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,33 +18,31 @@ import com.headmostlab.notes.model.Note;
 import com.headmostlab.notes.ui.note.NoteFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NoteListFragment extends Fragment implements NoteListContract.View {
 
-    public static final String NOTES_KEY = "NOTES";
     private FragmentNoteListBinding binding;
     private NoteListContract.Presenter presenter;
+    private NoteListAdapter adapter;
 
-    public static NoteListFragment newNoteListFragment(ArrayList<Note> notes) {
-        NoteListFragment fragment = new NoteListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(NOTES_KEY, notes);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static NoteListFragment newNoteListFragment() {
+        return new NoteListFragment();
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentNoteListBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        List<Note> notes = getArguments().getParcelableArrayList(NOTES_KEY);
-        binding.noteList.setAdapter(new NoteListAdapter(notes));
+        adapter = new NoteListAdapter(Collections.emptyList());
+        binding.noteList.setAdapter(adapter);
         presenter = new NoteListPresenter();
         presenter.takeView(this);
     }
@@ -57,9 +56,14 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
                 .commit();
     }
 
+    @Override
+    public void show(ArrayList<Note> notes) {
+        adapter.setNotes(notes);
+    }
+
     private class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
-        private final List<Note> notes;
+        private List<Note> notes;
 
         public NoteListAdapter(List<Note> notes) {
             this.notes = notes;
@@ -67,10 +71,16 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
 
         @NonNull
         @Override
-        public NoteListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public NoteListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                             int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.note_row_item, parent, false);
             return new ViewHolder(view);
+        }
+
+        public void setNotes(List<Note> notes) {
+            this.notes = notes;
+            notifyDataSetChanged();
         }
 
         @Override

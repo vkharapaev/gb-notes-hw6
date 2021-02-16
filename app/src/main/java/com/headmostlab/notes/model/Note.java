@@ -13,6 +13,12 @@ public class Note implements Parcelable {
     public Note() {
     }
 
+    public Note(String title, String description, Date creationDate) {
+        this.title = title;
+        this.description = description;
+        this.creationDate = creationDate;
+    }
+
     protected Note(Parcel in) {
         title = in.readString();
         description = in.readString();

@@ -38,6 +38,5 @@ public class NoteFragment extends Fragment {
         binding.title.setText(note.getTitle());
         binding.description.setText(note.getDescription());
         binding.createDate.setText(String.format("%s", note.getCreationDate()));
-
     }
 }
