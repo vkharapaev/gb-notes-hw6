@@ -17,8 +17,6 @@ import com.headmostlab.notes.R;
 import com.headmostlab.notes.databinding.FragmentNoteListBinding;
 import com.headmostlab.notes.model.Note;
 import com.headmostlab.notes.ui.note.NoteFragment;
-import com.headmostlab.notes.ui.note.NotePresenter;
-import com.headmostlab.notes.ui.note.NoteViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +47,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
         presenter = new ViewModelProvider(this,
                 new NoteListViewModelFactory(this, null)).get(NoteListPresenter.class);
         presenter.takeView(this);
+        presenter.setOrientation(getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
         @Override
         public void onBindViewHolder(@NonNull NoteListAdapter.ViewHolder holder, int position) {
             holder.title.setText(notes.get(position).getTitle());
-            holder.container.setOnClickListener(v -> presenter.select(notes.get(position)));
+            holder.container.setOnClickListener(v -> presenter.selectNote(notes.get(position)));
         }
 
         @Override

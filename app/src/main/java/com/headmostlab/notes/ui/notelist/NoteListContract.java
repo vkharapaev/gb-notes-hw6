@@ -14,6 +14,8 @@ public interface NoteListContract {
     interface Presenter {
         void takeView(View view);
 
-        void select(Note note);
+        void selectNote(Note note);
+
+        void setOrientation(int orientation);
     }
 }

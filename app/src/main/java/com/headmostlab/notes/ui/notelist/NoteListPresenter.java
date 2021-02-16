@@ -15,29 +15,46 @@ public class NoteListPresenter extends ViewModel implements NoteListContract.Pre
     private WeakReference<NoteListContract.View> view;
     private final SavedStateHandle dataStorage;
     private Note note;
+    private int orientation;
+    private ArrayList<Note> notes;
+    private boolean isFirstCall = false;
 
     public NoteListPresenter(SavedStateHandle savedState) {
         dataStorage = savedState;
         note = savedState.get(NOTE_KEY);
+        loadNotes();
     }
 
     @Override
     public void takeView(NoteListContract.View view) {
         this.view = new WeakReference<>(view);
-        loadNotes();
-        show();
+        showNotes();
+        if (!isFirstCall) {
+            isFirstCall = true;
+            showNote();
+        }
     }
 
-    private void show() {
+    private void showNote() {
         if (view() != null && note != null) {
             view().show(note);
         }
     }
 
     @Override
-    public void select(Note note) {
+    public void selectNote(Note note) {
         setNote(note);
-        show();
+        showNote();
+    }
+
+    @Override
+    public void setOrientation(int newOrientation) {
+        if (this.orientation != newOrientation) {
+            this.orientation = newOrientation;
+            showNote();
+        } else {
+            note = null;
+        }
     }
 
     private void setNote(Note note) {
@@ -45,8 +62,11 @@ public class NoteListPresenter extends ViewModel implements NoteListContract.Pre
         dataStorage.set(NOTE_KEY, note);
     }
 
-    public void loadNotes() {
-        ArrayList<Note> notes = createNotes();
+    private void loadNotes() {
+        notes = createNotes();
+    }
+
+    private void showNotes() {
         if (view() != null) {
             view().show(notes);
         }
