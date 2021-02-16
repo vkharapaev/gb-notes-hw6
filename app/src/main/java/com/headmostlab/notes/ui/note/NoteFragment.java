@@ -11,8 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.headmostlab.notes.databinding.FragmentNoteBinding;
 import com.headmostlab.notes.model.Note;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 public class NoteFragment extends Fragment implements NoteContract.View {
 
@@ -48,8 +52,14 @@ public class NoteFragment extends Fragment implements NoteContract.View {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentNoteBinding.inflate(inflater, container, false);
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker().build();
+        picker.addOnPositiveButtonClickListener(selection ->
+                presenter.setCreateDate(new Date(selection)));
+        binding.pickDateButton.setOnClickListener(v ->
+                picker.show(getFragmentManager(), picker.toString()));
         return binding.getRoot();
     }
 
@@ -62,6 +72,6 @@ public class NoteFragment extends Fragment implements NoteContract.View {
     public void show(Note note) {
         binding.title.setText(note.getTitle());
         binding.description.setText(note.getDescription());
-        binding.createDate.setText(String.format("%s", note.getCreationDate()));
+        binding.createDate.setText(DateFormat.getDateInstance().format(note.getCreationDate()));
     }
 }

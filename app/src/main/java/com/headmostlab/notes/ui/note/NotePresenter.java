@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.headmostlab.notes.model.Note;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 
 public class NotePresenter extends ViewModel implements NoteContract.Presenter {
 
@@ -30,6 +31,12 @@ public class NotePresenter extends ViewModel implements NoteContract.Presenter {
     public void setNote(Note note) {
         this.note = note;
         dataStorage.set(NOTE_KEY, note);
+    }
+
+    @Override
+    public void setCreateDate(Date date) {
+        note.setCreationDate(date);
+        showNote();
     }
 
     private void showNote() {
