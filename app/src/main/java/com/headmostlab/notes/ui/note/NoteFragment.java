@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.headmostlab.notes.databinding.FragmentNoteBinding;
 import com.headmostlab.notes.model.Note;
@@ -26,6 +27,16 @@ public class NoteFragment extends Fragment implements NoteContract.View {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new ViewModelProvider(this,
+                new NoteViewModelFactory(this, null)).get(NotePresenter.class);
+        if (getArguments() != null) {
+            presenter.setNote(getArguments().getParcelable(NOTE_KEY));
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,9 +46,7 @@ public class NoteFragment extends Fragment implements NoteContract.View {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Note note = getArguments().getParcelable(NOTE_KEY);
-        presenter = new NotePresenter();
-        presenter.takeView(this, note);
+        presenter.takeView(this);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, NoteFragment.newNoteFragment(note))
-                .addToBackStack(null)
+                .addToBackStack("note")
                 .commit();
     }
 

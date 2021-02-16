@@ -8,6 +8,8 @@ public interface NoteContract {
     }
 
     interface Presenter {
-        void takeView(View view, Note note);
+        void takeView(View view);
+
+        void setNote(Note note);
     }
 }

@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, NoteListFragment.newNoteListFragment())
-                .commit();
+                .replace(R.id.container, NoteListFragment.newNoteListFragment())
+                .commitNow();
     }
 
 }
