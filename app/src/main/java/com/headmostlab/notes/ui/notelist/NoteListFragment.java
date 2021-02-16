@@ -10,12 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.headmostlab.notes.R;
 import com.headmostlab.notes.databinding.FragmentNoteListBinding;
 import com.headmostlab.notes.model.Note;
 import com.headmostlab.notes.ui.note.NoteFragment;
+import com.headmostlab.notes.ui.note.NotePresenter;
+import com.headmostlab.notes.ui.note.NoteViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +46,8 @@ public class NoteListFragment extends Fragment implements NoteListContract.View 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         adapter = new NoteListAdapter(Collections.emptyList());
         binding.noteList.setAdapter(adapter);
-        presenter = new NoteListPresenter();
+        presenter = new ViewModelProvider(this,
+                new NoteListViewModelFactory(this, null)).get(NoteListPresenter.class);
         presenter.takeView(this);
     }
 
